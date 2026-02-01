@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amim 💖 My Valentine</title>
+
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body, html { width:100%; height:100%; font-family:'Segoe UI',sans-serif; overflow:hidden; }
+
+  body {
+    background: linear-gradient(135deg, #ff4d6d, #ff9a9e);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
+  /* Intro screen */
+  #intro {
+    position:absolute;
+    width:100%; height:100%;
+    background: linear-gradient(135deg, #ff6f91, #ff9a9e);
+    display:flex; justify-content:center; align-items:center;
+    flex-direction:column;
+    z-index:5;
+    color:white; text-align:center;
+  }
+  #intro h1 { font-size:28px; margin-bottom:20px; }
+  #intro p { font-size:18px; }
+
+  .card {
+    background:white;
+    width:90%; max-width:360px;
+    padding:30px 20px;
+    border-radius:22px;
+    text-align:center;
+    box-shadow:0 15px 35px rgba(0,0,0,0.25);
+    z-index:2;
+    display:none;
+  }
+
+  h1 { color:#ff3366; font-size:26px; margin-bottom:10px; }
+  p { color:#555; font-size:16px; line-height:1.5; margin-bottom:25px; }
+
+  .buttons { position:relative; height:120px; }
+
+  button {
+    padding:14px 26px;
+    border:none;
+    border-radius:30px;
+    font-size:16px;
+    cursor:pointer;
+  }
+
+  #yesBtn { background:#ff3366; color:white; }
+  #noBtn { background:#eee; color:#333; position:absolute; left:50%; transform:translateX(-50%); }
+
+  .celebration { display:none; animation:pop 0.6s ease; }
+
+  @keyframes pop { 0%{transform:scale(0.5);opacity:0;} 100%{transform:scale(1);opacity:1;} }
+
+  .heart,.confetti,.firework{position:fixed;pointer-events:none;}
+  .heart{font-size:22px;animation:floatUp 3s linear forwards;}
+  @keyframes floatUp { from{transform:translateY(0);opacity:1;} to{transform:translateY(-600px);opacity:0;} }
+
+  .confetti{width:8px;height:8px;background:gold;animation:fall 3s linear forwards;}
+  @keyframes fall{to{transform:translateY(700px) rotate(360deg);opacity:0;}}
+
+  .firework{width:6px;height:6px;border-radius:50%;animation:explode 1s ease-out forwards;}
+  @keyframes explode{to{transform:scale(18);opacity:0;}}
+
+  /* Countdown Timer */
+  #countdown { font-size:18px; margin-bottom:15px; color:#ff3366; }
+</style>
+</head>
+<body>
+
+<!-- Intro Screen -->
+<div id="intro">
+  <h1>Amim 💕</h1>
+  <p>Tap anywhere to start a special surprise for you!</p>
+</div>
+
+<!-- Background Music -->
+<audio autoplay loop>
+  <source src="https://cdn.pixabay.com/audio/2022/10/30/audio_8b4c8e1f07.mp3" type="audio/mpeg">
+</audio>
+
+<div class="card" id="card">
+  <h1>Amim 💖</h1>
+  <p>
+    You make my days brighter and my heart happier.<br>
+    Every moment with you feels magical. 💕
+  </p>
+
+  <div id="countdown"></div>
+
+  <div class="buttons" id="buttons">
+    <button id="yesBtn">Yes 💘</button>
+    <button id="noBtn">No 🙈</button>
+  </div>
+
+  <div class="celebration" id="celebration">
+    <h1>YAAAAY 🎆💖</h1>
+    <p>
+      I love you so much, Amim 💕<br>
+      Thank you for being my Valentine 😍
+    </p>
+  </div>
+</div>
+
+<script>
+  // Intro screen
+  const intro = document.getElementById("intro");
+  const card = document.getElementById("card");
+  intro.addEventListener("click", () => {
+    intro.style.display = "none";
+    card.style.display = "block";
+  });
+
+  // Countdown Timer to Valentine's Day (Feb 14)
+  function updateCountdown() {
+    const now = new Date();
+    const valentine = new Date(now.getFullYear(), 1, 14, 0,0,0); // Feb=1
+    if(now>valentine) valentine.setFullYear(valentine.getFullYear()+1);
+    const diff = valentine-now;
+    const days = Math.floor(diff/1000/60/60/24);
+    const hours = Math.floor((diff/1000/60/60)%24);
+    const minutes = Math.floor((diff/1000/60)%60);
+    const seconds = Math.floor((diff/1000)%60);
+    document.getElementById("countdown").textContent =
+      `Countdown to Valentine: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+
+  // Buttons behavior
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const buttons = document.getElementById("buttons");
+  const celebration = document.getElementById("celebration");
+
+  function moveNoButton() {
+    const x = Math.random()*220 - 110;
+    const y = Math.random()*90 - 45;
+    noBtn.style.transform = `translate(${x}px,${y}px)`;
+  }
+
+  noBtn.addEventListener("touchstart", moveNoButton);
+  noBtn.addEventListener("mouseover", moveNoButton);
+
+  yesBtn.addEventListener("click", () => {
+    buttons.style.display="none";
+    celebration.style.display="block";
+    fireworks();
+    hearts();
+    confetti();
+  });
+
+  function hearts() {
+    setInterval(()=>{
+      const h=document.createElement("div");
+      h.className="heart";
+      h.innerHTML="💖";
+      h.style.left=Math.random()*window.innerWidth+"px";
+      h.style.bottom="0";
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),3000);
+    },400);
+  }
+
+  function confetti() {
+    setInterval(()=>{
+      const c=document.createElement("div");
+      c.className="confetti";
+      c.style.left=Math.random()*window.innerWidth+"px";
+      c.style.top="0";
+      c.style.background=["gold","hotpink","cyan","red"][Math.floor(Math.random()*4)];
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),3000);
+    },200);
+  }
+
+  function fireworks() {
+    setInterval(()=>{
+      const f=document.createElement("div");
+      f.className="firework";
+      f.style.left=Math.random()*window.innerWidth+"px";
+      f.style.top=Math.random()*window.innerHeight+"px";
+      f.style.boxShadow="0 0 10px gold,0 0 10px hotpink,0 0 10px cyan";
+      document.body.appendChild(f);
+      setTimeout(()=>f.remove(),1000);
+    },300);
+  }
+
+</script>
+
+</body>
+</html>
